@@ -267,6 +267,23 @@ class CreditControlRequest(CreditControl):
     aoc_request_type: int
     oc_supported_features: OcSupportedFeatures
     service_information: ServiceInformation
+    #
+    framed_ip_address: bytes
+    framed_ipv6_prefix: list[bytes]
+    rat_type : int
+    ip_can_type : int
+    supported_features: SupportedFeatures
+    qos_information: QosInformation
+    default_eps_bearer_qos: DefaultEpsBearerQos
+    user_location_info: bytes
+    ms_timezone: bytes
+    bearer_usage: int
+    called_station_id: bytes
+    network_request_support: int
+    online: int
+    offline: int
+    sgsn_mcc_mnc: bytes
+
 
     avp_def: AvpGenType = (
         AvpGenDef("session_id", AVP_SESSION_ID, is_required=True),
@@ -300,6 +317,21 @@ class CreditControlRequest(CreditControl):
         AvpGenDef("aoc_request_type", AVP_TGPP_AOC_REQUEST_TYPE, VENDOR_TGPP),
         AvpGenDef("oc_supported_features", AVP_OC_SUPPORTED_FEATURES, type_class=OcSupportedFeatures),
         AvpGenDef("service_information", AVP_TGPP_SERVICE_INFORMATION, VENDOR_TGPP, type_class=ServiceInformation),
+        AvpGenDef("supported_features", AVP_TGPP_SUPPORTED_FEATURES, VENDOR_TGPP, type_class=SupportedFeatures),
+        AvpGenDef("qos_information", AVP_TGPP_QOS_INFORMATION, VENDOR_TGPP, type_class=QosInformation),
+        AvpGenDef("framed_ip_address", AVP_FRAMED_IP_ADDRESS),
+        AvpGenDef("framed_ipv6_prefix", AVP_FRAMED_IPV6_PREFIX),
+        AvpGenDef("ip_can_type", AVP_TGPP_IP_CAN_TYPE, VENDOR_TGPP),
+        AvpGenDef("rat_type", AVP_TGPP_RAT_TYPE, VENDOR_TGPP),
+        AvpGenDef("network_request_support", AVP_TGPP_NETWORK_REQUEST_SUPPORT, VENDOR_TGPP),
+        AvpGenDef("online", AVP_TGPP_ONLINE, VENDOR_TGPP),
+        AvpGenDef("offline", AVP_TGPP_OFFLINE, VENDOR_TGPP),
+        AvpGenDef("sgsn_mcc_mnc", AVP_TGPP_3GPP_SGSN_MCC_MNC, VENDOR_TGPP),
+        AvpGenDef("called_station_id", AVP_CALLED_STATION_ID),
+        AvpGenDef("default_eps_bearer_qos", AVP_TGPP_DEFAULT_EPS_BEARER_QOS, VENDOR_TGPP, type_class=DefaultEpsBearerQos),
+        AvpGenDef("user_location_info", AVP_TGPP_3GPP_USER_LOCATION_INFO, VENDOR_TGPP),
+        AvpGenDef("ms_timezone", AVP_TGPP_3GPP_MS_TIMEZONE, VENDOR_TGPP),
+        AvpGenDef("bearer_usage", AVP_TGPP_BEARER_USAGE, VENDOR_TGPP),
     )
 
     def __post_init__(self):
@@ -314,6 +346,9 @@ class CreditControlRequest(CreditControl):
         setattr(self, "service_parameter_info", [])
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])
+        setattr(self, "supported_features", SupportedFeatures())
+        setattr(self, "qos_information", QosInformation())
+        setattr(self, "default_eps_bearer_qos", DefaultEpsBearerQos())   
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
