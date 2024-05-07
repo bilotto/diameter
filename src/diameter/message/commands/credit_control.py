@@ -283,6 +283,11 @@ class CreditControlRequest(CreditControl):
     online: int
     offline: int
     sgsn_mcc_mnc: bytes
+    access_network_charging_address: bytes
+    access_network_charging_identifier_gx: bytes
+    an_gw_address: bytes
+    event_trigger: int
+
 
 
     avp_def: AvpGenType = (
@@ -332,6 +337,11 @@ class CreditControlRequest(CreditControl):
         AvpGenDef("user_location_info", AVP_TGPP_3GPP_USER_LOCATION_INFO, VENDOR_TGPP),
         AvpGenDef("ms_timezone", AVP_TGPP_3GPP_MS_TIMEZONE, VENDOR_TGPP),
         AvpGenDef("bearer_usage", AVP_TGPP_BEARER_USAGE, VENDOR_TGPP),
+        AvpGenDef("access_network_charging_address", AVP_TGPP_ACCESS_NETWORK_CHARGING_ADDRESS, VENDOR_TGPP),
+        AvpGenDef("access_network_charging_identifier_gx", AVP_TGPP_ACCESS_NETWORK_CHARGING_IDENTIFIER_GX, VENDOR_TGPP),
+        AvpGenDef("an_gw_address", AVP_TGPP_AN_GW_ADDRESS, VENDOR_TGPP),
+        AvpGenDef("event_trigger", AVP_TGPP_EVENT_TRIGGER, VENDOR_TGPP),
+
     )
 
     def __post_init__(self):
@@ -348,7 +358,9 @@ class CreditControlRequest(CreditControl):
         setattr(self, "route_record", [])
         setattr(self, "supported_features", SupportedFeatures())
         setattr(self, "qos_information", QosInformation())
-        setattr(self, "default_eps_bearer_qos", DefaultEpsBearerQos())   
+        setattr(self, "default_eps_bearer_qos", DefaultEpsBearerQos())
+        setattr(self, "event_trigger", [])
+
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
