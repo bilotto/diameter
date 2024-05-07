@@ -308,7 +308,7 @@ class AaRequest(Aa):
     af_charging_identifier: str
     media_component_description: MediaComponentDescription
     supported_features: SupportedFeatures
-    specific_action: int
+    specific_action: list[int]
 
     avp_def: AvpGenType = (
         AvpGenDef("session_id", AVP_SESSION_ID, is_required=True),
@@ -383,6 +383,7 @@ class AaRequest(Aa):
         setattr(self, "route_record", [])
         setattr(self, "media_component_description", MediaComponentDescription())
         setattr(self, "supported_features", SupportedFeatures())
+        setattr(self, "specific_action", [])
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
