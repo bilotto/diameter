@@ -3793,7 +3793,6 @@ class MediaComponentDescription:
     max_requested_bandwidth_dl: int = None
     media_type: int = None
 
-
     # # noinspection PyDataclass
     avp_def: dataclasses.InitVar[AvpGenType] = (
         AvpGenDef("media_component_number", AVP_TGPP_MEDIA_COMPONENT_NUMBER, VENDOR_TGPP),
@@ -3803,4 +3802,26 @@ class MediaComponentDescription:
         AvpGenDef("max_requested_bandwidth_ul", AVP_TGPP_MAX_REQUESTED_BANDWIDTH_UL, VENDOR_TGPP),
         AvpGenDef("max_requested_bandwidth_dl", AVP_TGPP_MAX_REQUESTED_BANDWIDTH_DL, VENDOR_TGPP),
         AvpGenDef("media_type", AVP_TGPP_MEDIA_TYPE, VENDOR_TGPP),
+    )
+    
+@dataclasses.dataclass
+class ChargingRuleInstall:
+    """A data container that represents the "Charging-Rule-Install" (1001) grouped AVP."""
+    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+    )
+
+@dataclasses.dataclass
+class ChargingRuleRemove:
+    """A data container that represents the "Charging-Rule-Remove" (1002) grouped AVP."""
+    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
     )

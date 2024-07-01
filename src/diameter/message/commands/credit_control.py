@@ -115,6 +115,11 @@ class CreditControlAnswer(CreditControl):
     proxy_info: list[ProxyInfo]
     route_record: list[bytes]
     failed_avp: list[FailedAvp]
+    # New AVP
+    qos_information: QosInformation
+    bearer_control_mode: int
+    charging_rule_install: list[ChargingRuleInstall]
+
 
     # 3GPP extensions: ETSI 132.299
     low_balance_indication: int
@@ -152,11 +157,14 @@ class CreditControlAnswer(CreditControl):
         AvpGenDef("proxy_info", AVP_PROXY_INFO, type_class=ProxyInfo),
         AvpGenDef("route_record", AVP_ROUTE_RECORD),
         AvpGenDef("failed_avp", AVP_FAILED_AVP, type_class=FailedAvp),
+        AvpGenDef("qos_information", AVP_TGPP_QOS_INFORMATION, VENDOR_TGPP, type_class=QosInformation),
         AvpGenDef("low_balance_indication", AVP_TGPP_LOW_BALANCE_INDICATION, VENDOR_TGPP),
         AvpGenDef("remaining_balance", AVP_TGPP_REMAINING_BALANCE, VENDOR_TGPP, type_class=RemainingBalance),
         AvpGenDef("oc_supported_features", AVP_OC_SUPPORTED_FEATURES, type_class=OcSupportedFeatures),
         AvpGenDef("oc_olr", AVP_OC_OLR, VENDOR_TGPP, type_class=OcOlr),
         AvpGenDef("service_information", AVP_TGPP_SERVICE_INFORMATION, VENDOR_TGPP, type_class=ServiceInformation),
+        AvpGenDef("bearer_control_mode", AVP_TGPP_BEARER_CONTROL_MODE, VENDOR_TGPP),
+        AvpGenDef("charging_rule_install", AVP_TGPP_CHARGING_RULE_INSTALL, VENDOR_TGPP, type_class=ChargingRuleInstall),
     )
 
     def __post_init__(self):
@@ -166,6 +174,7 @@ class CreditControlAnswer(CreditControl):
 
         setattr(self, "auth_application_id", 4)
         setattr(self, "multiple_services_credit_control", [])
+        setattr(self, "charging_rule_install", [])
         setattr(self, "redirect_host", [])
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])

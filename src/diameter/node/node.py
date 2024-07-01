@@ -573,7 +573,12 @@ class Node:
     def _flag_connection_as_ready(self, conn: PeerConnection):
         conn.state = PEER_READY
         for app_peers in self._peer_routes.values():
+            # print(app_peers)
             for app, peers in app_peers.items():
+                # print(app)
+                # Bug: if set peer as default
+                if not isinstance(app, Application):
+                    continue
                 for peer in peers:
                     if peer.connection == conn:
                         app.is_ready.set()
@@ -894,6 +899,12 @@ class Node:
             return
 
         realm_name = message.destination_realm.decode()
+        if realm_name == "sy.openet.com":
+            realm_name = "dmg.openet.com"
+        elif realm_name == "sy.miami.com":
+            realm_name = "dmg.miami.com"
+        elif realm_name == "sy.guyana.com":
+            realm_name = "dmg.guyana.com"
         if realm_name not in self._peer_routes:
             self.logger.warning(
                 f"{conn} realm {realm_name} not served by this node "
@@ -924,6 +935,33 @@ class Node:
                         f"{conn} is unknown, picking {app} as first best match")
                     receiving_app = app
                     break
+
+        if not receiving_app:
+            for realm_name in self._peer_routes:
+                for app, peers in self._peer_routes[realm_name].items():
+                    self.logger.debug(f"checking app {app} for {conn}")
+                    self.logger.debug(f"peers: {peers}")
+                    if not isinstance(app, Application):
+                        continue
+                    if app.application_id == app_id:
+                        if peer:
+                            # we could have more than app with same ID, but configured
+                            # for different connections
+                            if peer in peers:
+                                self.logger.debug(
+                                    f"{conn} is configured as preferred peer "
+                                    f"connection for {app}")
+                                receiving_app = app
+                                break
+                        else:
+                            # peer is unknown, any app will do
+                            self.logger.debug(
+                                f"{conn} is unknown, picking {app} as first best match")
+                            receiving_app = app
+                            break
+
+        self.logger.debug(f"receiving_app: {receiving_app}")
+
 
         if receiving_app:
             if conn.host_identity not in self._peer_waiting_answer:
@@ -1440,6 +1478,7 @@ class Node:
         msg.origin_state_id = self.state_id
         msg.auth_application_id = list(self.auth_application_ids)
         msg.acct_application_id = list(self.acct_application_ids)
+        # msg.inband_security_id = constants.E_INBAND_SECURITY_ID_NO_INBAND_SECURITY
 
         self.send_message(conn, msg)
 
@@ -1506,9 +1545,14 @@ class Node:
 
         conn = None
         for connected_peer in self.connections.values():
+            self.logger.debug(connected_peer)
+            self.logger.debug(connected_peer.host_identity)
+            self.logger.debug(waiting_host_identity)
             if connected_peer.host_identity == waiting_host_identity:
                 conn = connected_peer
                 break
+
+        self.logger.debug(conn)
 
         if conn is None:
             raise NotRoutable(
@@ -1562,7 +1606,19 @@ class Node:
                 if app == route_app:
                     peer_list = peers
                     break
+        peer_list = []
+        for realm_name in self._peer_routes:
+            for route_app, peers in self._peer_routes[realm_name].items():
+                peer_list.extend(peers)
+                # for peer in peers:
+                #     print(peer)
+                #     if peer.node_name == message.destination_host.decode():
+                #         continue
+                #     peer_list.append(peer)
 
+        # if peer_list is None and "_default" in self._peer_routes[self.realm_name]:
+        #     peer_list = self._peer_routes[self.realm_name]["_default"]
+                
             if peer_list is None and "_default" in self._peer_routes[realm_name]:
                 peer_list = self._peer_routes[realm_name]["_default"]
 
