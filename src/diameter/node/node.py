@@ -1475,10 +1475,11 @@ class Node:
         msg.host_ip_address = conn.host_ip_address
         msg.vendor_id = self.vendor_id
         msg.product_name = self.product_name
-        msg.origin_state_id = self.state_id
+        # msg.origin_state_id = self.state_id
         msg.auth_application_id = list(self.auth_application_ids)
         msg.acct_application_id = list(self.acct_application_ids)
-        # msg.inband_security_id = constants.E_INBAND_SECURITY_ID_NO_INBAND_SECURITY
+        msg.inband_security_id = constants.E_INBAND_SECURITY_ID_NO_INBAND_SECURITY
+        msg.firmware_revision = 240000
 
         self.send_message(conn, msg)
 
