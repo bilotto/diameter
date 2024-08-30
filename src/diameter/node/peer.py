@@ -558,7 +558,7 @@ class PeerConnection:
 
             resume_waiting = False
             while len(self._read_buffer) > 0 and resume_waiting is False:
-                msg_header = None
+                msg_header = message = None
                 try:
                     msg_header = MessageHeader.from_bytes(self._read_buffer)
                     self.logger.debug(
@@ -569,9 +569,11 @@ class PeerConnection:
                             f"message incomplete (received "
                             f"{len(self._read_buffer)} bytes so far), waiting")
                         resume_waiting = True
-                    message = Message.from_bytes(self._read_buffer[:msg_header.length])
-                    self.reset_last_message()
-                    self._read_buffer = self._read_buffer[msg_header.length:]
+                    else:
+                        message = Message.from_bytes(
+                            self._read_buffer[:msg_header.length])
+                        self.reset_last_message()
+                        self._read_buffer = self._read_buffer[msg_header.length:]
 
                 except Exception as e:
                     if msg_header and len(self._read_buffer) >= msg_header.length:
@@ -586,10 +588,11 @@ class PeerConnection:
                         self.close()
                         return
 
-                self.msg_dump.received(message)
-                self.logger.info(f"received a message: {message}")
+                if message:
+                    self.msg_dump.received(message)
+                    self.logger.info(f"received a message: {message}")
 
-                self.__dispatch_message(message)
+                    self.__dispatch_message(message)
 
     def work_write_queue(self, _thread: StoppableThread):
         while True:
