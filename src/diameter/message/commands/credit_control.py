@@ -115,7 +115,6 @@ class CreditControlAnswer(CreditControl):
     proxy_info: list[ProxyInfo]
     route_record: list[bytes]
     failed_avp: list[FailedAvp]
-    # New AVP
     qos_information: QosInformation
     bearer_control_mode: int
     charging_rule_install: list[ChargingRuleInstall]
@@ -297,8 +296,6 @@ class CreditControlRequest(CreditControl):
     an_gw_address: bytes
     event_trigger: int
 
-
-
     avp_def: AvpGenType = (
         AvpGenDef("session_id", AVP_SESSION_ID, is_required=True),
         AvpGenDef("origin_host", AVP_ORIGIN_HOST, is_required=True, is_mandatory=False),
@@ -350,7 +347,6 @@ class CreditControlRequest(CreditControl):
         AvpGenDef("access_network_charging_identifier_gx", AVP_TGPP_ACCESS_NETWORK_CHARGING_IDENTIFIER_GX, VENDOR_TGPP),
         AvpGenDef("an_gw_address", AVP_TGPP_AN_GW_ADDRESS, VENDOR_TGPP),
         AvpGenDef("event_trigger", AVP_TGPP_EVENT_TRIGGER, VENDOR_TGPP),
-
     )
 
     def __post_init__(self):
@@ -365,11 +361,7 @@ class CreditControlRequest(CreditControl):
         setattr(self, "service_parameter_info", [])
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])
-        setattr(self, "supported_features", SupportedFeatures())
-        setattr(self, "qos_information", QosInformation())
-        setattr(self, "default_eps_bearer_qos", DefaultEpsBearerQos())
         setattr(self, "event_trigger", [])
-
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
