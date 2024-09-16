@@ -1602,6 +1602,12 @@ class Node:
                 peer = i
                 break
         if not peer:
+            for i in usable_peers:
+                if i.realm_name != realm_name:
+                    peer = i
+                    break
+
+        if not peer:
             peer = min(usable_peers, key=lambda c: c.counters.requests)
         conn = peer.connection
         self.logger.debug(
