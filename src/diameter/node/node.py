@@ -896,12 +896,12 @@ class Node:
             return
 
         realm_name = message.destination_realm.decode()
-        # if realm_name == "sy.openet.com":
-        #     realm_name = "dmg.openet.com"
-        # elif realm_name == "sy.miami.com":
-        #     realm_name = "dmg.miami.com"
-        # elif realm_name == "sy.guyana.com":
-        #     realm_name = "dmg.guyana.com"
+        if realm_name == "sy.openet.com":
+            realm_name = "dmg.openet.com"
+        elif realm_name == "sy.miami.com":
+            realm_name = "dmg.miami.com"
+        elif realm_name == "sy.guyana.com":
+            realm_name = "dmg.guyana.com"
         if realm_name not in self._peer_routes:
             self.logger.warning(
                 f"{conn} realm {realm_name} not served by this node "
