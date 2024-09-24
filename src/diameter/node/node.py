@@ -1594,7 +1594,7 @@ class Node:
         for i in usable_peers:
             if i.realm_name == realm_name:
                 usable_peers_same_realm.append(i)
-                break
+
         if usable_peers_same_realm:
             usable_peers = usable_peers_same_realm
         peer = min(usable_peers, key=lambda c: c.counters.requests)
