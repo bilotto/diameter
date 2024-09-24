@@ -1590,11 +1590,19 @@ class Node:
         if not usable_peers:
             raise NotRoutable("No connections is available to route to")
 
-        peer = min(usable_peers, key=lambda c: c.counters.requests)
+        peer = None
+        for i in usable_peers:
+            if i.realm_name == realm_name:
+                peer = i
+                break
+        if not peer:
+            self.logger.error(f"No peer in realm {realm_name} is available for app {app}. Will use any peer")
+            peer = min(usable_peers, key=lambda c: c.counters.requests)
+            conn = peer.connection
+            self.logger.debug(
+                f"{conn} is least used for app {app}, with "
+                f"{peer.counters.requests} total outgoing requests")
         conn = peer.connection
-        self.logger.debug(
-            f"{conn} is least used for app {app}, with "
-            f"{peer.counters.requests} total outgoing requests")
 
         if not message.header.hop_by_hop_identifier:
             message.header.hop_by_hop_identifier = conn.hop_by_hop_seq.next_sequence()
