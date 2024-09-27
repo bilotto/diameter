@@ -1596,13 +1596,14 @@ class Node:
         if not usable_peers:
             raise NotRoutable("No connections is available to route to")
 
-        peer = None
+        usable_peers_same_realm = []
         for i in usable_peers:
             if i.realm_name == realm_name:
-                peer = i
-                break
-        if not peer:
-            peer = min(usable_peers, key=lambda c: c.counters.requests)
+                usable_peers_same_realm.append(i)
+
+        if usable_peers_same_realm:
+            usable_peers = usable_peers_same_realm
+        peer = min(usable_peers, key=lambda c: c.counters.requests)
         conn = peer.connection
         self.logger.debug(
             f"{conn} is least used for app {app}, with "
