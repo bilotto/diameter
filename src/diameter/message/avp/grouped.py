@@ -3809,10 +3809,12 @@ class ChargingRuleInstall:
     """A data container that represents the "Charging-Rule-Install" (1001) grouped AVP."""
     charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
     charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_definition: list[Avp] = dataclasses.field(default_factory=list)
 
     avp_def: dataclasses.InitVar[AvpGenType] = (
         AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
         AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP),
     )
 
 @dataclasses.dataclass
@@ -3820,8 +3822,35 @@ class ChargingRuleRemove:
     """A data container that represents the "Charging-Rule-Remove" (1002) grouped AVP."""
     charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
     charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_definition: list[Avp] = dataclasses.field(default_factory=list)
+
 
     avp_def: dataclasses.InitVar[AvpGenType] = (
         AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
         AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP),
+    )
+
+@dataclasses.dataclass
+class ChargingRuleDefinition:
+    """A data container that represents the "Charging-Rule-Definition" (1003) grouped AVP."""
+    rating_group: int = None
+    service_identifier: int = None
+    flow_status: int = None
+    charging_rule_name: str = None
+    precedence: int = None
+    reporting_level: int = None
+    qos_information: QosInformation = None
+    flow_information: list[str] = dataclasses.field(default_factory=list)
+
+    # noinspection PyDataclass
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("rating_group", AVP_RATING_GROUP, is_required=True),
+        AvpGenDef("service_identifier", AVP_SERVICE_IDENTIFIER, is_required=True),
+        AvpGenDef("flow_status", AVP_TGPP_FLOW_STATUS, VENDOR_TGPP),
+        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+        AvpGenDef("precedence", AVP_TGPP_PRECEDENCE, VENDOR_TGPP),
+        AvpGenDef("reporting_level", AVP_TGPP_REPORTING_LEVEL, VENDOR_TGPP),
+        AvpGenDef("qos_information", AVP_TGPP_QOS_INFORMATION, VENDOR_TGPP, type_class=QosInformation),
+        AvpGenDef("flow_information", AVP_TGPP_FLOW_INFORMATION, VENDOR_TGPP),
     )
