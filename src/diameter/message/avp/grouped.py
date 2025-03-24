@@ -3787,7 +3787,6 @@ class MediaComponentDescription:
     """A data container that represents the "Media-Component-Description" (1435) grouped AVP."""
     media_component_number: int = None
     media_sub_component: list[MediaSubComponent] = dataclasses.field(default_factory=list)
-    # Need AF-Application-Identifier, Max-Requested-Bandwith-UL and DL
     af_application_identifier: str = None
     max_requested_bandwidth_ul: int = None
     max_requested_bandwidth_dl: int = None
@@ -3797,40 +3796,12 @@ class MediaComponentDescription:
     avp_def: dataclasses.InitVar[AvpGenType] = (
         AvpGenDef("media_component_number", AVP_TGPP_MEDIA_COMPONENT_NUMBER, VENDOR_TGPP),
         AvpGenDef("media_sub_component", AVP_TGPP_MEDIA_SUB_COMPONENT, VENDOR_TGPP, type_class=MediaSubComponent),
-        # Need AF-Application-Identifier, Max-Requested-Bandwith-UL and DL
         AvpGenDef("af_application_identifier", AVP_TGPP_AF_APPLICATION_IDENTIFIER, VENDOR_TGPP),
         AvpGenDef("max_requested_bandwidth_ul", AVP_TGPP_MAX_REQUESTED_BANDWIDTH_UL, VENDOR_TGPP),
         AvpGenDef("max_requested_bandwidth_dl", AVP_TGPP_MAX_REQUESTED_BANDWIDTH_DL, VENDOR_TGPP),
         AvpGenDef("media_type", AVP_TGPP_MEDIA_TYPE, VENDOR_TGPP),
     )
     
-@dataclasses.dataclass
-class ChargingRuleInstall:
-    """A data container that represents the "Charging-Rule-Install" (1001) grouped AVP."""
-    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
-    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
-    charging_rule_definition: list[Avp] = dataclasses.field(default_factory=list)
-
-    avp_def: dataclasses.InitVar[AvpGenType] = (
-        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
-        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
-        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP),
-    )
-
-@dataclasses.dataclass
-class ChargingRuleRemove:
-    """A data container that represents the "Charging-Rule-Remove" (1002) grouped AVP."""
-    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
-    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
-    charging_rule_definition: list[Avp] = dataclasses.field(default_factory=list)
-
-
-    avp_def: dataclasses.InitVar[AvpGenType] = (
-        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
-        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
-        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP),
-    )
-
 @dataclasses.dataclass
 class ChargingRuleDefinition:
     """A data container that represents the "Charging-Rule-Definition" (1003) grouped AVP."""
@@ -3853,4 +3824,31 @@ class ChargingRuleDefinition:
         AvpGenDef("reporting_level", AVP_TGPP_REPORTING_LEVEL, VENDOR_TGPP),
         AvpGenDef("qos_information", AVP_TGPP_QOS_INFORMATION, VENDOR_TGPP, type_class=QosInformation),
         AvpGenDef("flow_information", AVP_TGPP_FLOW_INFORMATION, VENDOR_TGPP),
+    )
+
+@dataclasses.dataclass
+class ChargingRuleInstall:
+    """A data container that represents the "Charging-Rule-Install" (1001) grouped AVP."""
+    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_definition: list[ChargingRuleDefinition] = dataclasses.field(default_factory=list)
+
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP, type_class=ChargingRuleDefinition),
+    )
+
+@dataclasses.dataclass
+class ChargingRuleRemove:
+    """A data container that represents the "Charging-Rule-Remove" (1002) grouped AVP."""
+    charging_rule_base_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_name: list[Avp] = dataclasses.field(default_factory=list)
+    charging_rule_definition: list[ChargingRuleDefinition] = dataclasses.field(default_factory=list)
+
+
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("charging_rule_base_name", AVP_TGPP_CHARGING_RULE_BASE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
+        AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP, type_class=ChargingRuleDefinition),
     )
