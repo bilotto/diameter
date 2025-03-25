@@ -118,7 +118,8 @@ class CreditControlAnswer(CreditControl):
     qos_information: QosInformation
     bearer_control_mode: int
     charging_rule_install: list[ChargingRuleInstall]
-
+    default_eps_bearer_qos: DefaultEpsBearerQos
+    event_trigger: int
 
     # 3GPP extensions: ETSI 132.299
     low_balance_indication: int
@@ -164,6 +165,8 @@ class CreditControlAnswer(CreditControl):
         AvpGenDef("service_information", AVP_TGPP_SERVICE_INFORMATION, VENDOR_TGPP, type_class=ServiceInformation),
         AvpGenDef("bearer_control_mode", AVP_TGPP_BEARER_CONTROL_MODE, VENDOR_TGPP),
         AvpGenDef("charging_rule_install", AVP_TGPP_CHARGING_RULE_INSTALL, VENDOR_TGPP, type_class=ChargingRuleInstall),
+        AvpGenDef("default_eps_bearer_qos", AVP_TGPP_DEFAULT_EPS_BEARER_QOS, VENDOR_TGPP, type_class=DefaultEpsBearerQos),
+        AvpGenDef("event_trigger", AVP_TGPP_EVENT_TRIGGER, VENDOR_TGPP),
     )
 
     def __post_init__(self):
@@ -178,6 +181,7 @@ class CreditControlAnswer(CreditControl):
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])
         setattr(self, "failed_avp", [])
+        setattr(self, "event_trigger", [])
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
