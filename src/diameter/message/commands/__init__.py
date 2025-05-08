@@ -19,10 +19,16 @@ from .device_watchdog import *
 from .diameter_eap import *
 from .disconnect_peer import *
 from .home_agent_mip import *
+from .location_info import *
+from .multimedia_auth import *
+from .push_profile import *
 from .re_auth import *
+from .registration_termination import *
+from .server_assignment import *
 from .spending_limit import *
 from .spending_status_notification import *
 from .session_termination import *
+from .user_authorization import *
 
 
 # Remaining Message types that have no implementation (yet), either because
@@ -115,96 +121,6 @@ class SipPushProfile(UndefinedMessage):
     """
     code: int = 288
     name: str = "SIP-Push-Profile"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class UserAuthorization(UndefinedMessage):
-    """A User-Authorization message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [UserAuthorization.append_avp][diameter.message.Message.append_avp] method.
-    """
-    code: int = 300
-    name: str = "User-Authorization"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class ServerAssignment(UndefinedMessage):
-    """A Server-Assignment message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [ServerAssignment.append_avp][diameter.message.Message.append_avp] method.
-    """
-    code: int = 301
-    name: str = "Server-Assignment"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class LocationInfo(UndefinedMessage):
-    """A Location-Info message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [LocationInfo.append_avp][diameter.message.Message.append_avp] method.
-    """
-    code: int = 302
-    name: str = "Location-Info"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class MultimediaAuth(UndefinedMessage):
-    """A Multimedia-Auth message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [MultimediaAuth.append_avp][diameter.message.Message.append_avp] method.
-    """
-    code: int = 303
-    name: str = "Multimedia-Auth"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class RegistrationTermination(UndefinedMessage):
-    """A Registration-Termination message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [AaMobileNode.append_avpRegistrationTerminationdiameter.message.Message.append_avp] method.
-    """
-    code: int = 304
-    name: str = "Registration-Termination"
-
-    def __post_init__(self):
-        super().__post_init__()
-        self.header.command_code = self.code
-
-
-class PushProfile(UndefinedMessage):
-    """A Push-Profile message.
-
-    This message implementation provides no python subclasses for requests and
-    answers; AVPs must be created manually and added using the
-    [PushProfile.append_avp][diameter.message.Message.append_avp] method.
-    """
-    code: int = 305
-    name: str = "Push-Profile"
 
     def __post_init__(self):
         super().__post_init__()
@@ -2442,3 +2358,60 @@ all_commands.update({
 all_commands.update({
     m.code: m for m in UndefinedMessage.__subclasses__()
 })
+
+
+def register(cmd_class: Type[DefinedMessage]):
+    """Register a custom command.
+
+    Adds a class that extends [DefinedMessage][diameter.message.DefinedMessage]
+    to the internal registry of commands. Registered custom commands will be
+    automatically recognised when parsing network-received bytes. If the command
+    also implements a request and answer subclass, those are automatically
+    returned as well.
+
+    ```
+    msg_bytes = "01000028c00003e70000000000000000000000000000010740000014686f73742e7265616c6d3b31"
+
+    # returns an instance of UndefinedMessage
+    msg = Message.from_bytes(msg_bytes)
+    print(dump(msg))
+
+    # Prints:
+    # Unknown <Version: 0x01, Length: 40, Flags: 0xc0 (request, proxyable), Hop-by-Hop Identifier: 0x0, End-to-End Identifier: 0x0>
+    #   Session-Id <Code: 0x107, Flags: 0x40 (-M-), Length: 20, Val: host.realm;1>
+
+    from diameter.message import DefinedMessage
+    from diameter.message.commands import register
+
+    class SpecialMessage(DefinedMessage):
+        code: int = 999
+        name: str = "Special-Message"
+
+        def __post_init__(self):
+            self.header.command_code = self.code
+            super().__post_init__()
+
+    register(SpecialMessage)
+
+    # now returns an instance of SpecialMessage
+    msg = Message.from_bytes(msg_bytes)
+    print(dump(msg))
+
+    # Prints:
+    # Special-Message <Version: 0x01, Length: 40, Flags: 0xc0 (request, proxyable), Hop-by-Hop Identifier: 0x0, End-to-End Identifier: 0x0>
+    #   Session-Id <Code: 0x107, Flags: 0x40 (-M-), Length: 20, Val: host.realm;1>
+    ```
+
+    !!! Warning
+        If a command implementation with the same command code already exists,
+        that implementation will be overwritten.
+
+    """
+    if not issubclass(cmd_class, DefinedMessage):
+        raise RuntimeError(f"Cannot register {cmd_class} as a command, it does "
+                           f"not subclass DefinedMessage")
+    if not hasattr(cmd_class, "code"):
+        raise RuntimeError(f"Cannot register {cmd_class} as a command, it does "
+                           f"not have a `code` attribute")
+
+    all_commands[cmd_class.code] = cmd_class
