@@ -1576,6 +1576,10 @@ class Node:
         if hasattr(message, "destination_realm"):
             realm_name = message.destination_realm.decode()
 
+        origin_host = None
+        if hasattr(message, 'origin_host') and message.origin_host:
+            origin_host = message.origin_host.decode()
+
         peer_list = None
         if realm_name in self._peer_routes:
             for route_app, peers in self._peer_routes[realm_name].items():
@@ -1594,6 +1598,12 @@ class Node:
         usable_peers = [
             peer for peer in peer_list
             if peer.connection and peer.connection.state in PEER_READY_STATES]
+                
+        if usable_peers and origin_host:
+            usable_peers = [
+                peer for peer in usable_peers
+                if peer.node_name != origin_host
+            ]
 
         if not usable_peers:
             raise NotRoutable("No connections is available to route to")
