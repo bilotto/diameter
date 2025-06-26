@@ -4077,3 +4077,20 @@ class ChargingRuleRemove:
         AvpGenDef("charging_rule_name", AVP_TGPP_CHARGING_RULE_NAME, VENDOR_TGPP),
         AvpGenDef("charging_rule_definition", AVP_TGPP_CHARGING_RULE_DEFINITION, VENDOR_TGPP, type_class=ChargingRuleDefinition),
     )
+
+
+@dataclasses.dataclass
+class UsageMonitoringInformation:
+    """A data container that represents the "Usage-Monitoring-Information" (1067) grouped AVP."""
+    monitoring_key: str = None
+    used_service_unit: UsedServiceUnit = None
+    granted_service_unit: GrantedServiceUnit = None
+    usage_monitoring_level: int = None
+
+    # # noinspection PyDataclass
+    avp_def: dataclasses.InitVar[AvpGenType] = (
+        AvpGenDef("monitoring_key", AVP_TGPP_MONITORING_KEY, VENDOR_TGPP),
+        AvpGenDef("used_service_unit", AVP_USED_SERVICE_UNIT, type_class=UsedServiceUnit),
+        AvpGenDef("granted_service_unit", AVP_GRANTED_SERVICE_UNIT, type_class=GrantedServiceUnit),
+        AvpGenDef("usage_monitoring_level", AVP_TGPP_USAGE_MONITORING_LEVEL, VENDOR_TGPP),
+    )

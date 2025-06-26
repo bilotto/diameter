@@ -120,6 +120,7 @@ class CreditControlAnswer(CreditControl):
     charging_rule_install: list[ChargingRuleInstall]
     default_eps_bearer_qos: DefaultEpsBearerQos
     event_trigger: int
+    usage_monitoring_information: UsageMonitoringInformation
 
     # 3GPP extensions: ETSI 132.299
     low_balance_indication: int
@@ -167,6 +168,7 @@ class CreditControlAnswer(CreditControl):
         AvpGenDef("charging_rule_install", AVP_TGPP_CHARGING_RULE_INSTALL, VENDOR_TGPP, type_class=ChargingRuleInstall),
         AvpGenDef("default_eps_bearer_qos", AVP_TGPP_DEFAULT_EPS_BEARER_QOS, VENDOR_TGPP, type_class=DefaultEpsBearerQos),
         AvpGenDef("event_trigger", AVP_TGPP_EVENT_TRIGGER, VENDOR_TGPP),
+        AvpGenDef("usage_monitoring_information", AVP_TGPP_USAGE_MONITORING_INFORMATION, VENDOR_TGPP, type_class=UsageMonitoringInformation),
     )
 
     def __post_init__(self):
@@ -182,6 +184,7 @@ class CreditControlAnswer(CreditControl):
         setattr(self, "route_record", [])
         setattr(self, "failed_avp", [])
         setattr(self, "event_trigger", [])
+        setattr(self, "usage_monitoring_information", [])
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
@@ -299,6 +302,7 @@ class CreditControlRequest(CreditControl):
     access_network_charging_identifier_gx: bytes
     an_gw_address: bytes
     event_trigger: int
+    usage_monitoring_information: UsageMonitoringInformation
 
     avp_def: AvpGenType = (
         AvpGenDef("session_id", AVP_SESSION_ID, is_required=True),
@@ -351,6 +355,7 @@ class CreditControlRequest(CreditControl):
         AvpGenDef("access_network_charging_identifier_gx", AVP_TGPP_ACCESS_NETWORK_CHARGING_IDENTIFIER_GX, VENDOR_TGPP),
         AvpGenDef("an_gw_address", AVP_TGPP_AN_GW_ADDRESS, VENDOR_TGPP),
         AvpGenDef("event_trigger", AVP_TGPP_EVENT_TRIGGER, VENDOR_TGPP),
+        AvpGenDef("usage_monitoring_information", AVP_TGPP_USAGE_MONITORING_INFORMATION, VENDOR_TGPP, type_class=UsageMonitoringInformation),
     )
 
     def __post_init__(self):
@@ -366,6 +371,7 @@ class CreditControlRequest(CreditControl):
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])
         setattr(self, "event_trigger", [])
+        setattr(self, "usage_monitoring_information", [])
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
