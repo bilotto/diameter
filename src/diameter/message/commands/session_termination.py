@@ -161,6 +161,7 @@ class SessionTerminationRequest(SessionTermination):
     origin_state_id: int
     proxy_info: list[ProxyInfo]
     route_record: list[bytes]
+    subscription_id: list[SubscriptionId]
 
     # Extension AVPs from rfc7155 (NAS Application)
     origin_aaa_protocol: int
@@ -180,6 +181,8 @@ class SessionTerminationRequest(SessionTermination):
         AvpGenDef("route_record", AVP_ROUTE_RECORD),
 
         AvpGenDef("origin_aaa_protocol", AVP_ORIGIN_AAA_PROTOCOL),
+        AvpGenDef("subscription_id", AVP_SUBSCRIPTION_ID, type_class=SubscriptionId),
+
     )
 
     def __post_init__(self):
@@ -191,6 +194,20 @@ class SessionTerminationRequest(SessionTermination):
         setattr(self, "state_class", [])
         setattr(self, "proxy_info", [])
         setattr(self, "route_record", [])
+        setattr(self, "subscription_id", [])
+
 
         assign_attr_from_defs(self, self._avps)
         self._avps = []
+
+    def add_subscription_id(self, subscription_id_type: int,
+                            subscription_id_data: str):
+        """Add a subscription ID to the request.
+
+        Args:
+            subscription_id_type: One of the `E_SUBSCRIPTION_ID_TYPE_*`
+                constant values
+            subscription_id_data: Actual subscription ID
+        """
+        self.subscription_id.append(SubscriptionId(
+            subscription_id_type, subscription_id_data))

@@ -310,6 +310,7 @@ class AaRequest(Aa):
     supported_features: SupportedFeatures
     specific_action: list[int]
     subscription_id: list[SubscriptionId]
+    required_acess_info: list[int]
 
     avp_def: AvpGenType = (
         AvpGenDef("session_id", AVP_SESSION_ID, is_required=True),
@@ -367,6 +368,7 @@ class AaRequest(Aa):
         AvpGenDef("specific_action", AVP_TGPP_SPECIFIC_ACTION, VENDOR_TGPP),
         AvpGenDef("supported_features", AVP_TGPP_SUPPORTED_FEATURES, VENDOR_TGPP, type_class=SupportedFeatures),
         AvpGenDef("subscription_id", AVP_SUBSCRIPTION_ID, type_class=SubscriptionId),
+        AvpGenDef("required_acess_info", AVP_TGPP_REQUIRED_ACCESS_INFO, VENDOR_TGPP)
     )
 
     def __post_init__(self):
@@ -385,6 +387,7 @@ class AaRequest(Aa):
         setattr(self, "route_record", [])
         setattr(self, "specific_action", [])
         setattr(self, "subscription_id", [])
+        setattr(self, "required_acess_info", [])
 
 
         assign_attr_from_defs(self, self._avps)
